@@ -1,11 +1,19 @@
 package main
 
 import (
-	"fmt"
+	auth_ms "fullstack/backend/auth-ms"
 	"fullstack/backend/auth-ms/internal/config"
+	"fullstack/backend/auth-ms/pkg/handler"
+	"log"
 )
 
 func main() {
 	cfg := config.GetConfig()
-	fmt.Print(cfg)
+
+	handlers := new(handler.Handler)
+
+	srv := new(auth_ms.Server)
+	if err := srv.Run(cfg.Listen.Port, handlers.InitRoutes()); err != nil {
+		log.Fatalf("error start server: %s", err)
+	}
 }
