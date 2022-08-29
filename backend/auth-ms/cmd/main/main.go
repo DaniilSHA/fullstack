@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"fullstack/backend/auth-ms/internal/config"
+)
 
 func main() {
-	fmt.Print("dasasd")
+	cfg := config.GetConfig()
+	fmt.Print(cfg)
 }
