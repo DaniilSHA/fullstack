@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/ilyakaznacheev/cleanenv"
-	"log"
+	"github.com/sirupsen/logrus"
 	"sync"
 )
 
@@ -23,7 +23,7 @@ func GetConfig() *Config {
 		if err := cleanenv.ReadConfig("./backend/auth-ms/config.yml", instance); err == nil {
 			_, err := cleanenv.GetDescription(instance, nil)
 			if err != nil {
-				log.Fatalf("error read config file: %s", err)
+				logrus.Fatalf("error read config file: %s", err)
 			}
 		}
 	})

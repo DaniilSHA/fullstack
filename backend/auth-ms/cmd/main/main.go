@@ -6,10 +6,12 @@ import (
 	"fullstack/backend/auth-ms/pkg/handler"
 	"fullstack/backend/auth-ms/pkg/repository"
 	"fullstack/backend/auth-ms/pkg/service"
-	"log"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
+	logrus.SetFormatter(new(logrus.JSONFormatter))
+
 	cfg := config.GetConfig()
 
 	repos := repository.NewRepository()
@@ -18,6 +20,6 @@ func main() {
 
 	srv := new(auth_ms.Server)
 	if err := srv.Run(cfg.Listen.Port, handlers.InitRoutes()); err != nil {
-		log.Fatalf("error start server: %s", err)
+		logrus.Fatalf("error start server: %s", err)
 	}
 }
