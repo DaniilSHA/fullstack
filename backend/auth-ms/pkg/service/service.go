@@ -6,7 +6,7 @@ import (
 )
 
 type Authentication interface {
-	CreateUser(user models.UserDto) (int, error)
+	CreateUser(user models.UserDto) (models.User, error)
 }
 
 type Service struct {

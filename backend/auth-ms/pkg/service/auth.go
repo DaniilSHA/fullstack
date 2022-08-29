@@ -13,6 +13,6 @@ func NewAuthService(repo repository.Repository) *AuthService {
 	return &AuthService{repo: repo}
 }
 
-func (s *AuthService) CreateUser(user models.UserDto) (int, error) {
+func (s *AuthService) CreateUser(user models.UserDto) (models.User, error) {
 	return s.repo.CreateUser(user)
 }
