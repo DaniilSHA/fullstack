@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"fullstack/backend/auth-ms/models"
 	"github.com/sirupsen/logrus"
@@ -44,6 +45,10 @@ func (a *AuthMongo) FindById(ctx context.Context, id string) (u models.User, err
 
 	result := a.collection.FindOne(ctx, filter)
 	if result.Err() != nil {
+		if errors.Is(result.Err(), mongo.ErrNoDocuments) {
+			//TODO ErrEntityNotFound
+			return u, fmt.Errorf("not found")
+		}
 		return u, fmt.Errorf("failed to find user by id: %s due to error: %s", id, err)
 	}
 	if err = result.Decode(&u); err != nil {
@@ -54,6 +59,41 @@ func (a *AuthMongo) FindById(ctx context.Context, id string) (u models.User, err
 }
 
 func (a *AuthMongo) UpdateUser(ctx context.Context, user models.User) error {
+	oid, err := primitive.ObjectIDFromHex(user.Id)
+	if err != nil {
+		return fmt.Errorf("failed to convert hex to objectId, hex: %s", user.Id)
+	}
+
+	filter := bson.M{"_id": oid}
+
+	userBytes, err := bson.Marshal(user)
+	if err != nil {
+		return fmt.Errorf("failed to marshal document, error: %v", err)
+	}
+
+	var updateUserObj bson.M
+	err = bson.Unmarshal(userBytes, &updateUserObj)
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal user bytes, error: %v", err)
+	}
+
+	delete(updateUserObj, "_id")
+
+	update := bson.M{
+		"$set": updateUserObj,
+	}
+
+	result, err := a.collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return fmt.Errorf("failed to execute update user query, error: %v", err)
+	}
+
+	if result.MatchedCount == 0 {
+		//TODO ErrEntityNotFound
+		return fmt.Errorf("not found")
+	}
+	logrus.Tracef("matched %d documents and modified %d documents", result.MatchedCount, result.ModifiedCount)
+
 	return nil
 }
 
