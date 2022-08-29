@@ -13,7 +13,7 @@ import (
 //}
 
 func (h *Handler) registration(c *gin.Context) {
-	var input models.User
+	var input models.UserDto
 
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())

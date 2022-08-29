@@ -1,15 +1,38 @@
 package repository
 
-import "fullstack/backend/auth-ms/models"
+import (
+	"context"
+	"fullstack/backend/auth-ms/models"
+	"github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/mongo"
+)
 
 type AuthMongo struct {
-	db
+	collection *mongo.Collection
 }
 
-func newAuthMongo(db) *AuthMongo {
-	return &AuthMongo{db}
+func newAuthMongo(database *mongo.Database, collection string) *AuthMongo {
+	return &AuthMongo{
+		collection: database.Collection(collection),
+	}
 }
 
-func (a *AuthMongo) CreateUser(user models.User) (int, error) {
-	return 0, int
+func (a *AuthMongo) CreateUser(ctx context.Context, user models.UserDto) (int, error) {
+	result, err := a.collection.InsertOne(ctx, user)
+	if err != nil {
+		logrus.Errorf("failed to create user %s", err)
+	}
+	return 0, nil
+}
+
+func (a *AuthMongo) FindById(ctx context.Context, id string) (models.User, error) {
+	return nil, nil
+}
+
+func (a *AuthMongo) UpdateUser(ctx context.Context, user models.User) error {
+	return nil
+}
+
+func (a *AuthMongo) DeleteUser(ctx context.Context, id string) error {
+	return nil
 }
