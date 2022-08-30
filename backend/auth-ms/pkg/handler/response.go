@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fullstack/backend/auth-ms/models"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 )
@@ -14,7 +15,6 @@ func newErrorResponse(c *gin.Context, statusCode int, message string) {
 	c.AbortWithStatusJSON(statusCode, error{message})
 }
 
-func newOkResponse(c *gin.Context, statusCode int, message string) {
-	logrus.Info(message)
-	c.AbortWithStatusJSON(statusCode, error{message})
+func newOkResponse(c *gin.Context, statusCode int, tokens *models.Tokens) {
+	c.AbortWithStatusJSON(statusCode, tokens)
 }

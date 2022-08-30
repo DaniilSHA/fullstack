@@ -10,3 +10,5 @@ mongodb:
   username: root
   password: qwerty
   collection: users
+secret:
+  jwtkey: golang

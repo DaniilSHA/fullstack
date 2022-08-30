@@ -21,7 +21,7 @@ func main() {
 	}
 
 	authRepository := mongodb.NewAuthMongo(mongoDBClient, cfg.MongoDB.Collection)
-	services := service.NewAuthService(authRepository)
+	services := service.NewAuthService(authRepository, cfg)
 	handlers := handler.NewHandler(services)
 
 	srv := new(auth_ms.Server)

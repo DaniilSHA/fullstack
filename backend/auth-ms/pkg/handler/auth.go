@@ -15,13 +15,13 @@ func (h *Handler) registration(c *gin.Context) {
 		return
 	}
 
-	userId, err := h.authService.CreateUser(input)
+	tokens, err := h.authService.CreateUser(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusConflict, err.Error())
 		return
 	}
 
-	newOkResponse(c, http.StatusCreated, userId)
+	newOkResponse(c, http.StatusCreated, tokens)
 }
 
 func (h *Handler) login(c *gin.Context) {
@@ -32,13 +32,13 @@ func (h *Handler) login(c *gin.Context) {
 		return
 	}
 
-	_, err := h.authService.CheckUserCredentials(input)
+	tokens, err := h.authService.CheckUserCredentials(input)
 	if err != nil {
 		newErrorResponse(c, http.StatusConflict, err.Error())
 		return
 	}
 
-	newOkResponse(c, http.StatusAccepted, "user confirmed")
+	newOkResponse(c, http.StatusOK, tokens)
 }
 
 func (h *Handler) refresh(c *gin.Context) {

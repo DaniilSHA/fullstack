@@ -21,6 +21,9 @@ type Config struct {
 		Password   string `json:"password"`
 		Collection string `json:"collection"`
 	} `json:"mongodb"`
+	Secret struct {
+		Jwtkey string `yaml:"jwtkey"`
+	} `yaml:"secret"`
 }
 
 var instance *Config
