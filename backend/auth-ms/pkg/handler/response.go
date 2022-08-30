@@ -13,3 +13,8 @@ func newErrorResponse(c *gin.Context, statusCode int, message string) {
 	logrus.Error(message)
 	c.AbortWithStatusJSON(statusCode, error{message})
 }
+
+func newOkResponse(c *gin.Context, statusCode int, message string) {
+	logrus.Info(message)
+	c.AbortWithStatusJSON(statusCode, error{message})
+}

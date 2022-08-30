@@ -58,6 +58,24 @@ func (a *AuthMongo) FindById(ctx context.Context, id string) (u models.User, err
 	return u, nil
 }
 
+func (a *AuthMongo) FindByUsername(ctx context.Context, username string) (u models.User, err error) {
+	filter := bson.M{"username": username}
+
+	result := a.collection.FindOne(ctx, filter)
+	if result.Err() != nil {
+		if errors.Is(result.Err(), mongo.ErrNoDocuments) {
+			//TODO ErrEntityNotFound
+			return u, fmt.Errorf("not found")
+		}
+		return u, fmt.Errorf("failed to find user by username: %s due to error: %s", username, err)
+	}
+	if err = result.Decode(&u); err != nil {
+		return u, fmt.Errorf("failed to decode user from db (username: %s) due to error: %s", username, err)
+	}
+
+	return u, nil
+}
+
 func (a *AuthMongo) UpdateUser(ctx context.Context, user models.User) error {
 	oid, err := primitive.ObjectIDFromHex(user.Id)
 	if err != nil {
