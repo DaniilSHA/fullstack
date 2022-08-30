@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"fullstack/backend/auth-ms/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -42,5 +41,18 @@ func (h *Handler) login(c *gin.Context) {
 }
 
 func (h *Handler) refresh(c *gin.Context) {
-	fmt.Print("REFRESH")
+	var input models.Tokens
+
+	if err := c.BindJSON(&input); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	tokens, err := h.authService.ValidateAndRefreshTokens(input)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	newOkResponse(c, http.StatusOK, tokens)
 }

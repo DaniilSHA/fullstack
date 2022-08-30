@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"fullstack/backend/auth-ms/internal/config"
 	"fullstack/backend/auth-ms/models"
@@ -54,6 +55,30 @@ func (auth *AuthService) CheckUserCredentials(userDto models.UserDto) (*models.T
 	}
 
 	return nil, fmt.Errorf("user don't confirmed")
+}
+
+func (auth *AuthService) ValidateAndRefreshTokens(tokens models.Tokens) (*models.Tokens, error) {
+	token, err := jwt.ParseWithClaims(tokens.RefreshToken, &tokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("invalid signed method")
+		}
+		return []byte(auth.cfg.Secret.Jwtkey), nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	claims, ok := token.Claims.(*tokenClaims)
+	if !ok {
+		return nil, errors.New("could not parse token")
+	}
+
+	return makeTokens(claims.UserId, auth.cfg.Secret.Jwtkey)
 }
 
 func makeTokens(userId string, key string) (*models.Tokens, error) {
