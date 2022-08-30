@@ -1,4 +1,4 @@
-package repository
+package mongodb
 
 import (
 	"context"
@@ -15,13 +15,13 @@ type AuthMongo struct {
 	collection *mongo.Collection
 }
 
-func newAuthMongo(database *mongo.Database, collection string) *AuthMongo {
+func NewAuthMongo(database *mongo.Database, collection string) *AuthMongo {
 	return &AuthMongo{
 		collection: database.Collection(collection),
 	}
 }
 
-func (a *AuthMongo) CreateUser(ctx context.Context, user models.UserDto) (string, error) {
+func (a *AuthMongo) CreateUser(ctx context.Context, user models.User) (string, error) {
 	logrus.Debug("creating user")
 	result, err := a.collection.InsertOne(ctx, user)
 	if err != nil {

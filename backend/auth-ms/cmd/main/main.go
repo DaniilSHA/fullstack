@@ -1,10 +1,11 @@
 package main
 
 import (
+	"context"
 	auth_ms "fullstack/backend/auth-ms"
 	"fullstack/backend/auth-ms/internal/config"
 	"fullstack/backend/auth-ms/pkg/handler"
-	"fullstack/backend/auth-ms/pkg/repository"
+	"fullstack/backend/auth-ms/pkg/repository/mongodb"
 	"fullstack/backend/auth-ms/pkg/service"
 	"github.com/sirupsen/logrus"
 )
@@ -14,8 +15,13 @@ func main() {
 
 	cfg := config.GetConfig()
 
-	repos := repository.NewRepository()
-	services := service.NewService(repos)
+	mongoDBClient, err := mongodb.NewClient(context.Background(), cfg.MongoDB.Host, cfg.MongoDB.Port, cfg.MongoDB.Username, cfg.MongoDB.Password, cfg.MongoDB.Database, cfg.MongoDB.Auth_db)
+	if err != nil {
+		panic(err)
+	}
+
+	authRepository := mongodb.NewAuthMongo(mongoDBClient, cfg.MongoDB.Collection)
+	services := service.NewAuthService(authRepository)
 	handlers := handler.NewHandler(services)
 
 	srv := new(auth_ms.Server)

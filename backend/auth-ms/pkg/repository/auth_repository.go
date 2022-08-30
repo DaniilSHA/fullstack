@@ -11,11 +11,3 @@ type Authentication interface {
 	UpdateUser(ctx context.Context, user models.User) error
 	DeleteUser(ctx context.Context, id string) error
 }
-
-type Repository struct {
-	Authentication
-}
-
-func NewRepository() *Repository {
-	return &Repository{}
-}
