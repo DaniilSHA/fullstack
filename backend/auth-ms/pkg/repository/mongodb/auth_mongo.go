@@ -46,7 +46,6 @@ func (a *AuthMongo) FindById(ctx context.Context, id string) (u models.User, err
 	result := a.collection.FindOne(ctx, filter)
 	if result.Err() != nil {
 		if errors.Is(result.Err(), mongo.ErrNoDocuments) {
-			//TODO ErrEntityNotFound
 			return u, fmt.Errorf("not found")
 		}
 		return u, fmt.Errorf("failed to find user by id: %s due to error: %s", id, err)
@@ -64,7 +63,6 @@ func (a *AuthMongo) FindByUsername(ctx context.Context, username string) (u mode
 	result := a.collection.FindOne(ctx, filter)
 	if result.Err() != nil {
 		if errors.Is(result.Err(), mongo.ErrNoDocuments) {
-			//TODO ErrEntityNotFound
 			return u, fmt.Errorf("not found")
 		}
 		return u, fmt.Errorf("failed to find user by username: %s due to error: %s", username, err)
