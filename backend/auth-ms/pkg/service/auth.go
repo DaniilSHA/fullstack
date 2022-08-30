@@ -57,7 +57,7 @@ func (auth *AuthService) CheckUserCredentials(userDto models.UserDto) (*models.T
 }
 
 func makeTokens(userId string, key string) (*models.Tokens, error) {
-	refreshToken := jwt.NewWithClaims(jwt.SigningMethodES256, &tokenClaims{
+	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(12 * time.Hour).Unix(),
 			IssuedAt:  time.Now().Unix(),
@@ -69,7 +69,7 @@ func makeTokens(userId string, key string) (*models.Tokens, error) {
 		return nil, fmt.Errorf("error while sigh token: %v", err)
 	}
 
-	accessToken := jwt.NewWithClaims(jwt.SigningMethodES256, &tokenClaims{
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(30 * time.Minute).Unix(),
 			IssuedAt:  time.Now().Unix(),
