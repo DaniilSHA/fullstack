@@ -20,7 +20,7 @@ func (h *Handler) registration(c *gin.Context) {
 		return
 	}
 
-	newOkResponse(c, http.StatusCreated, nil)
+	newOkResponse(c, http.StatusCreated)
 }
 
 func (h *Handler) login(c *gin.Context) {
@@ -37,7 +37,7 @@ func (h *Handler) login(c *gin.Context) {
 		return
 	}
 
-	newOkResponse(c, http.StatusOK, tokens)
+	newOkResponseWithTokens(c, http.StatusOK, tokens)
 }
 
 func (h *Handler) refresh(c *gin.Context) {
@@ -54,5 +54,5 @@ func (h *Handler) refresh(c *gin.Context) {
 		return
 	}
 
-	newOkResponse(c, http.StatusOK, tokens)
+	newOkResponseWithTokens(c, http.StatusOK, tokens)
 }

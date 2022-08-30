@@ -15,6 +15,10 @@ func newErrorResponse(c *gin.Context, statusCode int, message string) {
 	c.AbortWithStatusJSON(statusCode, error{message})
 }
 
-func newOkResponse(c *gin.Context, statusCode int, tokens *models.Tokens) {
+func newOkResponseWithTokens(c *gin.Context, statusCode int, tokens *models.Tokens) {
 	c.AbortWithStatusJSON(statusCode, tokens)
+}
+
+func newOkResponse(c *gin.Context, statusCode int) {
+	c.AbortWithStatus(statusCode)
 }
