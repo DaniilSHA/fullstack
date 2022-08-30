@@ -98,5 +98,24 @@ func (a *AuthMongo) UpdateUser(ctx context.Context, user models.User) error {
 }
 
 func (a *AuthMongo) DeleteUser(ctx context.Context, id string) error {
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return fmt.Errorf("failed to convert hex to objectId, hex: %s", id)
+	}
+
+	filter := bson.M{"_id": oid}
+
+	result, err := a.collection.DeleteOne(ctx, filter)
+	if err != nil {
+		return fmt.Errorf("failed to delete, err: %v", err)
+	}
+
+	if result.DeletedCount == 0 {
+		//TODO ErrEntityNotFound
+		return fmt.Errorf("not found")
+	}
+
+	logrus.Tracef("deleted %d documents", result.DeletedCount)
+
 	return nil
 }
