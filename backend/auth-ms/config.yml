@@ -4,9 +4,9 @@ listen:
   port: 4444
 mongodb:
   host: localhost
-  port: 27017
+  port: 27019
   database: user-service
-  auth_db:
-  username:
-  password:
+  auth_db: admin
+  username: root
+  password: qwerty
   collection: users
