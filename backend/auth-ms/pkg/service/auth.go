@@ -24,19 +24,19 @@ func NewAuthService(repo repository.Authentication, cfg *config.Config) *AuthSer
 	return &AuthService{repo: repo, cfg: cfg}
 }
 
-func (auth *AuthService) CreateUser(userDto models.UserDto) (*models.Tokens, error) {
+func (auth *AuthService) CreateUser(userDto models.UserDto) error {
 	_, err := auth.repo.FindByUsername(context.Background(), userDto.Username)
 	if err != nil {
 		if err.Error() == "not found" {
-			user, err := auth.repo.CreateUser(context.Background(), models.NewUser(userDto))
+			_, err := auth.repo.CreateUser(context.Background(), models.NewUser(userDto))
 			if err != nil {
-				return nil, err
+				return err
 			}
-			return makeTokens(user, auth.cfg.Secret.Jwtkey)
+			return nil
 		}
 	}
 
-	return nil, fmt.Errorf("username is busy")
+	return fmt.Errorf("username is busy")
 }
 
 func (auth *AuthService) CheckUserCredentials(userDto models.UserDto) (*models.Tokens, error) {
