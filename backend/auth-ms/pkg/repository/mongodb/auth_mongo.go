@@ -21,7 +21,7 @@ func NewAuthMongo(database *mongo.Database, collection string) *AuthMongo {
 	}
 }
 
-func (a *AuthMongo) CreateUser(ctx context.Context, user models.User) (string, error) {
+func (a *AuthMongo) CreateUser(ctx context.Context, user *models.User) (string, error) {
 	logrus.Debug("creating user")
 	result, err := a.collection.InsertOne(ctx, user)
 	if err != nil {
