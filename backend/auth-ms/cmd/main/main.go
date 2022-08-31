@@ -22,12 +22,12 @@ func main() {
 	//	logrus.Fatalf("error loading env variables: %s", err.Error())
 	//}
 
-	mongoDBClient, err := mongodb.NewClient(context.Background(), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_DB_DATABASE"), os.Getenv("DB_AUTH_DB"))
+	mongoDBClient, err := mongodb.NewClient(context.Background(), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_DATABASE"), os.Getenv("DB_AUTH_DB"))
 	if err != nil {
 		panic(err)
 	}
 
-	authRepository := mongodb.NewAuthMongo(mongoDBClient, viper.GetString("mongodb.collection"))
+	authRepository := mongodb.NewAuthMongo(mongoDBClient, os.Getenv("DB_COLLECTION"))
 	services := service.NewAuthService(authRepository)
 	handlers := handler.NewHandler(services)
 
