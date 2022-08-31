@@ -14,14 +14,17 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
+	//IF YOU WANT START BY LOCALHOST WITH CONFIG
 	//if err := initConfig(); err != nil {
 	//	logrus.Fatalf("error initializing configs: %s", err.Error())
 	//}
 
+	//IF YOU WANT START BY LOCALHOST WITH ENV
 	//if err := godotenv.Load("./backend/auth-ms/.env"); err != nil {
 	//	logrus.Fatalf("error loading env variables: %s", err.Error())
 	//}
 
+	//IF YOU WANT START BY DOCKER AUTOMATICALLY
 	mongoDBClient, err := mongodb.NewClient(context.Background(), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_DATABASE"), os.Getenv("DB_AUTH_DB"))
 	if err != nil {
 		panic(err)
