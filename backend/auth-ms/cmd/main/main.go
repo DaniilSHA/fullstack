@@ -2,36 +2,43 @@ package main
 
 import (
 	"context"
-	"fmt"
 	auth_ms "fullstack/backend/auth-ms"
-	"fullstack/backend/auth-ms/internal/config"
 	"fullstack/backend/auth-ms/pkg/handler"
 	"fullstack/backend/auth-ms/pkg/repository/mongodb"
 	"fullstack/backend/auth-ms/pkg/service"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
+	"os"
 )
 
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	cfg := config.GetConfig()
+	if err := initConfig(); err != nil {
+		logrus.Fatalf("error initializing configs: %s", err.Error())
+	}
 
-	fmt.Print("CFG LOG")
-	fmt.Print(cfg.Secret)
-	fmt.Print(cfg.Listen)
-	fmt.Print(cfg.MongoDB)
+	//if err := godotenv.Load("./backend/auth-ms/.env"); err != nil {
+	//	logrus.Fatalf("error loading env variables: %s", err.Error())
+	//}
 
-	mongoDBClient, err := mongodb.NewClient(context.Background(), cfg.MongoDB.Host, cfg.MongoDB.Port, cfg.MongoDB.Username, cfg.MongoDB.Password, cfg.MongoDB.Database, cfg.MongoDB.Auth_db)
+	mongoDBClient, err := mongodb.NewClient(context.Background(), os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USERNAME"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_DB_DATABASE"), os.Getenv("DB_AUTH_DB"))
 	if err != nil {
 		panic(err)
 	}
 
-	authRepository := mongodb.NewAuthMongo(mongoDBClient, cfg.MongoDB.Collection)
-	services := service.NewAuthService(authRepository, cfg)
+	authRepository := mongodb.NewAuthMongo(mongoDBClient, viper.GetString("mongodb.collection"))
+	services := service.NewAuthService(authRepository)
 	handlers := handler.NewHandler(services)
 
 	srv := new(auth_ms.Server)
-	if err := srv.Run(cfg.Listen.Port, handlers.InitRoutes()); err != nil {
+	if err := srv.Run(viper.GetString("listen.port"), handlers.InitRoutes()); err != nil {
 		logrus.Fatalf("error start server: %s", err)
 	}
+}
+
+func initConfig() error {
+	viper.AddConfigPath("backend/auth-ms")
+	viper.SetConfigName("config")
+	return viper.ReadInConfig()
 }

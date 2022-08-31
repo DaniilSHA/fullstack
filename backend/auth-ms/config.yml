@@ -3,8 +3,8 @@ listen:
   bind_ip: 0.0.0.0
   port: 4444
 mongodb:
-  host: localhost
-  port: 27019
+  host: mongo
+  port: 27017
   database: user-service
   auth_db: admin
   username: root

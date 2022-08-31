@@ -18,6 +18,14 @@ services:
     command: ./auth-ms
     depends_on:
       - mongo
+    environment:
+      - DB_HOST=mongo
+      - DB_PORT=27017
+      - DB_DATABASE=user-service
+      - DB_AUTH_DB=admin
+      - DB_USERNAME=root
+      - DB_PASSWORD=qwerty
+      - DB_COLLECTION=users
 
   frontend:
     container_name: frontend
