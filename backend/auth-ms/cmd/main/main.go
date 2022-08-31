@@ -14,9 +14,9 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
-	if err := initConfig(); err != nil {
-		logrus.Fatalf("error initializing configs: %s", err.Error())
-	}
+	//if err := initConfig(); err != nil {
+	//	logrus.Fatalf("error initializing configs: %s", err.Error())
+	//}
 
 	//if err := godotenv.Load("./backend/auth-ms/.env"); err != nil {
 	//	logrus.Fatalf("error loading env variables: %s", err.Error())
@@ -32,7 +32,7 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	srv := new(auth_ms.Server)
-	if err := srv.Run(viper.GetString("listen.port"), handlers.InitRoutes()); err != nil {
+	if err := srv.Run(os.Getenv("LISTEN_PORT"), handlers.InitRoutes()); err != nil {
 		logrus.Fatalf("error start server: %s", err)
 	}
 }

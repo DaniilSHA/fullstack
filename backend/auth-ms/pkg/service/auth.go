@@ -7,7 +7,7 @@ import (
 	"fullstack/backend/auth-ms/models"
 	"fullstack/backend/auth-ms/pkg/repository"
 	"github.com/dgrijalva/jwt-go"
-	"github.com/spf13/viper"
+	"os"
 	"time"
 )
 
@@ -50,7 +50,7 @@ func (auth *AuthService) CheckUserCredentials(userDto models.UserDto) (*models.T
 	checkUser := models.NewUser(userDto)
 
 	if user.Username == checkUser.Username && user.PasswordHash == checkUser.PasswordHash {
-		return makeTokens(user.Id, viper.GetString("secret.jwtkey"))
+		return makeTokens(user.Id, os.Getenv("SECRET_JWTKEY"))
 	}
 
 	return nil, fmt.Errorf("user don't confirmed")
@@ -61,7 +61,7 @@ func (auth *AuthService) ValidateAndRefreshTokens(tokens models.Tokens) (*models
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("invalid signed method")
 		}
-		return []byte(viper.GetString("secret.jwtkey")), nil
+		return []byte(os.Getenv("SECRET_JWTKEY")), nil
 	})
 
 	if err != nil {
@@ -77,7 +77,7 @@ func (auth *AuthService) ValidateAndRefreshTokens(tokens models.Tokens) (*models
 		return nil, errors.New("could not parse token")
 	}
 
-	return makeTokens(claims.UserId, viper.GetString("secret.jwtkey"))
+	return makeTokens(claims.UserId, os.Getenv("SECRET_JWTKEY"))
 }
 
 func makeTokens(userId string, key string) (*models.Tokens, error) {
