@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	auth_ms "fullstack/backend/auth-ms"
 	"fullstack/backend/auth-ms/internal/config"
 	"fullstack/backend/auth-ms/pkg/handler"
@@ -14,6 +15,11 @@ func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 
 	cfg := config.GetConfig()
+
+	fmt.Print("CFG LOG")
+	fmt.Print(cfg.Secret)
+	fmt.Print(cfg.Listen)
+	fmt.Print(cfg.MongoDB)
 
 	mongoDBClient, err := mongodb.NewClient(context.Background(), cfg.MongoDB.Host, cfg.MongoDB.Port, cfg.MongoDB.Username, cfg.MongoDB.Password, cfg.MongoDB.Database, cfg.MongoDB.Auth_db)
 	if err != nil {
