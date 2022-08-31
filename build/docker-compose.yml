@@ -10,6 +10,15 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: qwerty
 
+  auth-ms:
+    container_name: auth-ms
+    build: ../backend/auth-ms
+    ports:
+      - 4444:4444
+    command: ./auth-ms
+    depends_on:
+      - mongo
+
   frontend:
     container_name: frontend
     build: ../frontend

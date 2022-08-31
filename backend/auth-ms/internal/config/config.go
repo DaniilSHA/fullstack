@@ -10,7 +10,7 @@ type Config struct {
 	Listen struct {
 		Type   string `yaml:"type" env-default:"port"`
 		BindIP string `yaml:"bind_ip" env-default:"localhost"`
-		Port   string `yaml:"port" env-default:"8080"`
+		Port   string `yaml:"port" env-default:"4444"`
 	} `yaml:"listen"`
 	MongoDB struct {
 		Host       string `json:"host"`
