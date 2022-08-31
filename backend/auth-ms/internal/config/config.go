@@ -13,16 +13,16 @@ type Config struct {
 		Port   string `yaml:"port" env-default:"4444"`
 	} `yaml:"listen"`
 	MongoDB struct {
-		Host       string `json:"host"`
-		Port       string `json:"port"`
-		Database   string `json:"database"`
-		Auth_db    string `json:"auth_Db"`
-		Username   string `json:"username"`
-		Password   string `json:"password"`
-		Collection string `json:"collection"`
+		Host       string `json:"host" env-default:"localhost"`
+		Port       string `json:"port" env-default:"27019"`
+		Database   string `json:"database" env-default:"user-service"`
+		Auth_db    string `json:"auth_Db" env-default:"admin"`
+		Username   string `json:"username" env-default:"root"`
+		Password   string `json:"password" env-default:"qwerty"`
+		Collection string `json:"collection" env-default:"users"`
 	} `json:"mongodb"`
 	Secret struct {
-		Jwtkey string `yaml:"jwtkey"`
+		Jwtkey string `yaml:"jwtkey" env-default:"jwtkey"`
 	} `yaml:"secret"`
 }
 
